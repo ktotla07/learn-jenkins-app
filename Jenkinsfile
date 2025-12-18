@@ -17,14 +17,13 @@ pipeline {
                 npm ci
                 npm run build
                 ls -la
-                test -f build/index.html
                 '''
             }
         }
         stage('Test') {
             steps {
                 sh'''
-                    echo "Test Stage"
+                    test -f build/index.html
                 '''
             }
         }
