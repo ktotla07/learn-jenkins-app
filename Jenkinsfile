@@ -3,60 +3,64 @@ pipeline {
 
     stages {
         /*
+
         stage('Build') {
-            agent{
-                docker{
+            agent {
+                docker {
                     image 'node:18-alpine'
                     reuseNode true
                 }
             }
             steps {
-                sh'''
-                ls -la
-                node --version
-                npm --version
-                npm ci
-                npm run build
-                ls -la
+                sh '''
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
                 '''
             }
         }
         */
+
         stage('Test') {
-            agent{
-                docker{
+            agent {
+                docker {
                     image 'node:18-alpine'
                     reuseNode true
                 }
             }
-            
+
             steps {
-                sh'''
+                sh '''
                     #test -f build/index.html
                     npm test
                 '''
             }
         }
+
         stage('E2E') {
-            agent{
-                docker{
-                    image 'mcr.microsoft.com/playwright:v1.57.0-noble'
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                     reuseNode true
                 }
             }
-            
+
             steps {
-                sh'''
+                sh '''
                     npm install serve
-                    mcr.microsoft.com/playwright:v1.57.0-noble -s build
+                    node_modules/.bin/serve -s build
                     npx playwright test
                 '''
             }
         }
     }
+
     post {
-        always{
-            junit 'test-results/junit.xml'
+        always {
+            junit 'jest-results/junit.xml'
         }
     }
 }
